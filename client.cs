@@ -10,7 +10,7 @@ class Client
 
 
 
-    static void Main()
+    static async Task Main()
     {
         Console.Title = "CLIENT SIDE";
         Console.OutputEncoding = Encoding.UTF8;
@@ -20,7 +20,7 @@ class Client
 
         try
         {
-            clientSocket.Connect(remoteEndPoint);
+            await clientSocket.ConnectAsync(remoteEndPoint);
             Console.WriteLine("Подключение к серверу установлено.");
         }
         catch (SocketException)
@@ -31,9 +31,9 @@ class Client
             {
                 
                 Process.Start("C:\\Users\\USER\\Desktop\\Новая папка (2)\\Server\\bin\\Debug\\net9.0\\Server.exe");
-                Thread.Sleep(2000); 
+                await Task.Delay(2000);
 
-                clientSocket.Connect(remoteEndPoint);
+                await clientSocket.ConnectAsync(remoteEndPoint);
                 Console.WriteLine("Повторное подключение к серверу установлено");
             }
             catch (Exception ex)
@@ -45,8 +45,8 @@ class Client
 
         while (true)
         {
-            Thread.Sleep(2000);
-            Console.Write("Напишите запрос к серверу 1-Дата 2-время (или наберите exit для выхода): ");
+            await Task.Delay(2000);
+            Console.Write("Напишите запрос к серверу 1-Дата 2-времяы (или наберите exit для выхода): ");
             var message = Console.ReadLine();
             if (message == "exit")
             {
@@ -59,7 +59,7 @@ class Client
             else
             {
                 byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-                clientSocket.Send(messageBytes);
+                await clientSocket.SendAsync(new ArraySegment<byte>(messageBytes), SocketFlags.None);
 
 
                 var buffer = new byte[DEFAULT_BUFLEN];
